@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 /**
  *
@@ -58,8 +58,8 @@ public class Lexeme {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		String nl = System.getProperty("line.separator");
+		final StringBuilder sb = new StringBuilder();
+		final String nl = System.lineSeparator();
 
 		sb.append(lemma.toString()).append(nl);
 

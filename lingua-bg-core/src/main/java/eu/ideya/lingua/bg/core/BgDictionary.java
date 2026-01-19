@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,6 +64,7 @@ public class BgDictionary {
 
 
 		public void compile() {
+			// FIXME: glId not actually encoded
 			if(gender != null) {
 				GrammaticalLabel.encodeGender(glId, gender);
 				glMask |= GrammaticalLabel.genderMask;
@@ -188,17 +190,17 @@ public class BgDictionary {
 		return null;
 	}
 
-	private HashMap<String, TreeSet<WordEntry>> map = new HashMap();
+	private HashMap<String, TreeSet<WordEntry>> map = new HashMap<>();
 
 	/** Grammatical label UID as a key */
-	private TreeMap<Integer, TreeSet<WordEntry>> gluidMap = new TreeMap();
+	private TreeMap<Integer, TreeSet<WordEntry>> gluidMap = new TreeMap<>();
 
 	/**
 	 * Word ID as a key.
 	 * It is expected that by design the words are added to this collection
 	 * in specific order - the lemma first, followed by its inflected forms.
 	 */
-	private TreeMap<Integer, WordEntry> widMap = new TreeMap();
+	private TreeMap<Integer, WordEntry> widMap = new TreeMap<>();
 
 	/**
 	 * Note that for the dictionary to be consistent and to work properly,
@@ -232,7 +234,7 @@ public class BgDictionary {
 		boolean newWord = true;
 
 		if(entryList == null) { // if no such word in the map
-			entryList = new TreeSet<WordEntry>();
+			entryList = new TreeSet<>();
 
 			entryList.add(entry);
 			map.put(entry.word, entryList);
@@ -242,8 +244,8 @@ public class BgDictionary {
 					if( e.lemmaId       == entry.lemmaId &&
 					    e.grammLabelUid == entry.grammLabelUid ) {
 						// TODO: implement notification system
-						System.err.println("word already added: " + entry.toString());
-						System.err.println("duplicate of word: " + e.toString());
+						System.err.println("word already added: " + entry);
+						System.err.println("duplicate of word: " + e);
 						System.err.println();
 						newWord = false;
 						break;
@@ -264,7 +266,7 @@ public class BgDictionary {
 
 		if(entryList == null) { // if no such grammatical label in the map
 			if(!newWord) throw new Exception("Internal structure error. This is a BUG!!!");
-			entryList = new TreeSet<WordEntry>();
+			entryList = new TreeSet<>();
 			entryList.add(entry);
 			gluidMap.put(entry.grammLabelUid, entryList);
 		} else {
@@ -359,7 +361,7 @@ public class BgDictionary {
 
 		TreeSet<WordEntry> words = map.get(wordForm);
 		if(words == null) return new WordEntry[0];
-		ArrayList<WordEntry> lemmas = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> lemmas = new ArrayList<>();
 
 		for(WordEntry w : words) {
 			if(tag != null) {
@@ -391,7 +393,7 @@ public class BgDictionary {
 		TreeSet<WordEntry> words = map.get(lemma);
 		if(words == null) return new WordEntry[0];
 
-		ArrayList<WordEntry> lemmas = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> lemmas = new ArrayList<>();
 
 		for(WordEntry w : words) {
 			if(w.isLemma()) lemmas.add(w);
@@ -416,7 +418,7 @@ public class BgDictionary {
 	 * <code>dict</code> and are missing in this dictionary.
 	 */
 	public ArrayList<Lexeme> findMissingLexemes(BgDictionary dict) {
-		ArrayList<Lexeme> missing = new ArrayList<Lexeme>();
+		ArrayList<Lexeme> missing = new ArrayList<>();
 
 		for(Lexeme l : dict.lexemes()) {
 			WordEntry lemma = findLemma(l.lemma.word, l.lemma.grammLabelUid);
@@ -446,7 +448,7 @@ public class BgDictionary {
 	 * this dictionary, <code>lexeme2</code> <code>dict</code> dictionary)
 	 */
 	public ArrayList<LexemePair> findUnmatchingLexemes(BgDictionary dict) {
-		ArrayList<LexemePair> unmatched = new ArrayList<LexemePair>();
+		ArrayList<LexemePair> unmatched = new ArrayList<>();
 
 		for(Lexeme l2 : dict.lexemes()) {
 			WordEntry lemma = findLemma(l2.lemma.word, l2.lemma.grammLabelUid);
@@ -496,7 +498,7 @@ public class BgDictionary {
 			throw new IllegalArgumentException(i18n().getError("BgDictionary.notLemma", s));
 		}
 
-		ArrayList<WordEntry> words = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> words = new ArrayList<>();
 
 		if(widMap.get(lemma.id) == null) {
 			String s = lemma.toString();
@@ -528,7 +530,7 @@ public class BgDictionary {
 	) {
 		if(exactMatch) return findExactMatches(s, c, q);
 
-		ArrayList<WordEntry> res = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> res = new ArrayList<>();
 
 		NavigableMap<Integer, TreeSet<WordEntry>> m;
 		m = getMapByLexicalClass(c);
@@ -552,7 +554,7 @@ public class BgDictionary {
 				if((entries.first().grammLabelUid & q.glMask) != q.glId) continue;
 
 				for(WordEntry we : entries) {
-					if(we.word.indexOf(s) != -1) res.add(we);
+					if(we.word.contains(s)) res.add(we);
 				}
 			}
 		}
@@ -564,10 +566,10 @@ public class BgDictionary {
 	 * Returns a list of all words containing the specified string.
 	 */
 	public ArrayList<WordEntry> find(String s) {
-		ArrayList<WordEntry> res = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> res = new ArrayList<>();
 
 		for(WordEntry we : widMap.values()) {
-			if(we.word.indexOf(s) != -1) res.add(we);
+			if(we.word.contains(s)) res.add(we);
 		}
 
 		return res;
@@ -577,7 +579,7 @@ public class BgDictionary {
 	 * Returns a list of all words that ends with the specified string.
 	 */
 	public ArrayList<WordEntry> endsWith(String suffix) {
-		ArrayList<WordEntry> res = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> res = new ArrayList<>();
 
 		for(WordEntry we : widMap.values()) {
 			if(we.word.endsWith(suffix)) res.add(we);
@@ -590,14 +592,12 @@ public class BgDictionary {
 	 * Returns a list of all words equals to the specified string.
 	 */
 	public ArrayList<WordEntry> findExactMatches(String s) {
-		ArrayList<WordEntry> res = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> res = new ArrayList<>();
 
 		TreeSet<WordEntry> words = map.get(s);
 		if(words == null) return res;
 
-		for(WordEntry we : words) {
-			res.add(we);
-		}
+        res.addAll(words);
 
 		return res;
 	}
@@ -608,7 +608,7 @@ public class BgDictionary {
 	public ArrayList<WordEntry> findExactMatches (
 		String s, final GrammaticalLabel.LexicalClass c, SearchQuery q
 	) {
-		ArrayList<WordEntry> res = new ArrayList<WordEntry>();
+		ArrayList<WordEntry> res = new ArrayList<>();
 
 		TreeSet<WordEntry> words = map.get(s);
 		if(words == null) return res;
@@ -708,30 +708,24 @@ public class BgDictionary {
 		}
 
 		for(WordEntry we : widMap.values()) {
-
+			// TODO: ??
 		}
 
 		// TODO: check type with lexical class
 	}
 
 	public void exportLemmasToFile(String file) {
-		File f = new File(file);
-		FileOutputStream fos = null;
+		final File f = new File(file);
 
-		try {
-			fos = new FileOutputStream(f);
-
+		try (FileOutputStream fos = new FileOutputStream(f)) {
 			for(WordEntry we : lemmas()) {
-				fos.write(we.word.getBytes("UTF-8"));
+				fos.write(we.word.getBytes(StandardCharsets.UTF_8));
 				fos.write('\n');
-				fos.write(String.valueOf(we.grammLabelUid).getBytes("UTF-8"));
+				fos.write(String.valueOf(we.grammLabelUid).getBytes(StandardCharsets.UTF_8));
 				fos.write('\n');
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
-		} finally {
-			try { if(fos != null) fos.close(); }
-			catch(Exception e) { e.printStackTrace(); }
 		}
 	}
 
@@ -787,7 +781,7 @@ public class BgDictionary {
 			for(WordEntry we : widMap.values()) {
 				if(we.isLemma()) {
 					sb.append('\n');
-					fos.write(sb.toString().getBytes("UTF-8"));
+					fos.write(sb.toString().getBytes(StandardCharsets.UTF_8));
 					sb.setLength(0);
 				}
 
@@ -796,7 +790,7 @@ public class BgDictionary {
 			}
 
 			if(sb.length() > 0) {
-				fos.write(sb.toString().getBytes("UTF-8"));
+				fos.write(sb.toString().getBytes(StandardCharsets.UTF_8));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -870,7 +864,7 @@ public class BgDictionary {
 	public void importFromStream(InputStream stream) throws Exception {
 		BufferedReader reader;
 
-		InputStreamReader r = new InputStreamReader(stream, "UTF-8");
+		InputStreamReader r = new InputStreamReader(stream, StandardCharsets.UTF_8);
 		reader = new BufferedReader(r);
 
 		try {
@@ -915,7 +909,7 @@ public class BgDictionary {
 	}
 
 	public TreeMap<Integer, Integer> getLemmasAmbiguityStat() {
-		TreeMap<Integer, Integer> las = new TreeMap<Integer, Integer>();
+		TreeMap<Integer, Integer> las = new TreeMap<>();
 
 		for(String s : map.keySet()) {
 			int k = findLemmas(s).length;
@@ -932,7 +926,7 @@ public class BgDictionary {
 	}
 
 	public TreeMap<Integer, Integer> getWordsAmbiguityStat() {
-		TreeMap<Integer, Integer> was = new TreeMap<Integer, Integer>();
+		TreeMap<Integer, Integer> was = new TreeMap<>();
 
 		for(TreeSet<WordEntry> entries : map.values()) {
 			int k = entries.size();
@@ -949,7 +943,7 @@ public class BgDictionary {
 	}
 
 	public ArrayList<TreeSet<WordEntry>> getWordsByAmbiguityCount(int ambiguityCount) {
-		ArrayList<TreeSet<WordEntry>> words = new ArrayList<TreeSet<WordEntry>>();
+		ArrayList<TreeSet<WordEntry>> words = new ArrayList<>();
 
 		for(TreeSet<WordEntry> entries : map.values()) {
 			if(entries.size() != ambiguityCount) continue;
@@ -1039,13 +1033,13 @@ public class BgDictionary {
 		}
 	}
 
-	private Iterable<Lexeme> lexemes = new Lexemes();
+	private final Iterable<Lexeme> lexemes = new Lexemes();
 
 	public Iterable<Lexeme> lexemes() {
 		return lexemes;
 	}
 
-	private Iterable<WordEntry> lemmas = new Lemmas();
+	private final Iterable<WordEntry> lemmas = new Lemmas();
 
 	public Iterable<WordEntry> lemmas() {
 		return lemmas;
@@ -1068,9 +1062,7 @@ public class BgDictionary {
 		}
 
 		if(str.length() == 3) {
-			if(str.charAt(2) == '.') {
-				return true;
-			}
+            return str.charAt(2) == '.';
 		}
 
 		return false;

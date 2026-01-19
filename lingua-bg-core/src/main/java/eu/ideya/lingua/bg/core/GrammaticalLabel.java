@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 /**
  *
@@ -366,7 +366,7 @@ public class GrammaticalLabel implements Comparable<GrammaticalLabel> {
 	private int uid;
 	private boolean lemma = false;
 
-	private String bgGrammType;
+	private final String bgGrammType;
 
 	public GrammaticalLabel(String bgGrammType) {
 		this.bgGrammType = bgGrammType;
@@ -486,54 +486,48 @@ public class GrammaticalLabel implements Comparable<GrammaticalLabel> {
 	 */
 	public static boolean isCommonNoun(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 1 && code <= 75) return true;
-		return false;
-	}
+        return code >= 1 && code <= 75;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing a noun.
 	 */
 	public static boolean isProperNoun(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 193 && code <= 207) return true;
-		return false;
-	}
+        return code >= 193 && code <= 207;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing an adjective.
 	 */
 	public static boolean isAdjective(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 76 && code <= 89) return true;
-		return false;
-	}
+        return code >= 76 && code <= 89;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing a pronoun.
 	 */
 	public static boolean isPronoun(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 90 && code <= 130) return true;
-		return false;
-	}
+        return code >= 90 && code <= 130;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing a numeral.
 	 */
 	public static boolean isNumeral(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 131 && code <= 141) return true;
-		return false;
-	}
+        return code >= 131 && code <= 141;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing a verb.
 	 */
 	public static boolean isVerb(int grammLabelUid) {
 		int code = BgGrammarType.getCodeById(grammLabelUid);
-		if(code >= 142 && code <= 187) return true;
-		return false;
-	}
+        return code >= 142 && code <= 187;
+    }
 
 	/**
 	 * Determines whether the specified grammatical label is representing an adverb.
@@ -1374,6 +1368,7 @@ public class GrammaticalLabel implements Comparable<GrammaticalLabel> {
 
 		uid = getUidByGrammarType(type);
 
+		// FIXME: ??
 		int code = BgGrammarType.getCodeById(uid);
 		char suffix = BgGrammarType.getSuffixById(uid);
 

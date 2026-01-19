@@ -14,15 +14,16 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
-import eu.ideya.lingua.bg.GrammaticalLabel.PronounForm;
+import eu.ideya.lingua.bg.core.GrammaticalLabel.PronounForm;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
@@ -95,7 +96,7 @@ public class BTBUtils {
 	 * or <code>-1</code> if the specified tag is not a valid BTB-TS tag.
 	 */
 	public static int getFakeBgGrammarType(String tag) {
-		if(tag == null || tag.length() < 1) return -1;
+		if(tag == null || tag.isEmpty()) return -1;
 
 		switch(tag.charAt(0)) {
 			case 'N':
@@ -913,7 +914,7 @@ public class BTBUtils {
 	 * Returns the BTB-TS tag of the specified grammatical label UID.
 	 */
 	public static String getTag(int grammLabelUid) {
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
 		char lc = getLexicalClassChar(grammLabelUid);
 		sb.append(lc);
@@ -936,7 +937,7 @@ public class BTBUtils {
 
 
 	private static String getNounTag(int grammLabelUid) {
-		StringBuffer sb = new StringBuffer("N");
+		final StringBuilder sb = new StringBuilder("N");
 
 		// P02
 		sb.append(getNounTypeChar(grammLabelUid));
@@ -961,7 +962,7 @@ public class BTBUtils {
 	}
 
 	private static String getAdjectiveTag(int grammLabelUid) {
-		StringBuffer sb = new StringBuffer("A");
+		final StringBuilder sb = new StringBuilder("A");
 
 		// P02
 		sb.append(getGenderChar(grammLabelUid));
@@ -979,7 +980,7 @@ public class BTBUtils {
 	}
 
 	private static String getPronounTag(int grammLabelUid) {
-		StringBuffer sb = new StringBuffer("P");
+		final StringBuilder sb = new StringBuilder("P");
 
 		// P02
 		sb.append(getPronounTypeChar(grammLabelUid));
@@ -1020,7 +1021,7 @@ public class BTBUtils {
 	}
 
 	private static String getNumeralTag(int grammLabelUid) {
-		StringBuffer sb = new StringBuffer("M");
+		final StringBuilder sb = new StringBuilder("M");
 
 		// P02
 		sb.append(getNumeralTypeChar(grammLabelUid));
@@ -1147,7 +1148,7 @@ public class BTBUtils {
 	 * in at least one of the tags.
 	 */
 	public static boolean differentTags(String tag1, String tag2) {
-		int size = tag1.length() < tag2.length() ? tag1.length() : tag2.length();
+		int size = Math.min(tag1.length(), tag2.length());
 
 		for(int i = 0; i < size; i++) {
 			if(tag1.charAt(i) == '-' || tag2.charAt(i) == '-') continue;
@@ -1344,7 +1345,7 @@ public class BTBUtils {
 
 		try {
 			InputStreamReader r
-				= new InputStreamReader(stream, "UTF-8");
+				= new InputStreamReader(stream, StandardCharsets.UTF_8);
 			reader = new BufferedReader(r);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -1355,7 +1356,7 @@ public class BTBUtils {
 			int uid = -1;
 			String line = reader.readLine();
 
-			ArrayList<String> lines = new ArrayList<String>();
+			ArrayList<String> lines = new ArrayList<>();
 
 			while(line != null) {
 				int i = BgGrammarType.getTypeId(line);

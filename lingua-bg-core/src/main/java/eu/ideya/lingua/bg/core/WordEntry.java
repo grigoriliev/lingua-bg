@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 import java.io.Serializable;
 
@@ -51,14 +51,12 @@ public class WordEntry implements Comparable<WordEntry>, Serializable {
 	 */
 	public boolean sameAs(WordEntry we) {
 		if(!word.equals(we.word)) return false;
-		if(grammLabelUid != we.grammLabelUid) return false;
-
-		return true;
-	}
+        return grammLabelUid == we.grammLabelUid;
+    }
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == null && !(obj instanceof WordEntry)) return false;
+		if(!(obj instanceof WordEntry)) return false;
 		return id == ((WordEntry)obj).id;
 	}
 
@@ -140,7 +138,7 @@ public class WordEntry implements Comparable<WordEntry>, Serializable {
 	}
 
 	private String getPronounInfo() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
 		GrammaticalLabel.PronounType pt = GrammaticalLabel.getPronounType(grammLabelUid);
 		sb.append(", ").append(pt);
@@ -179,7 +177,7 @@ public class WordEntry implements Comparable<WordEntry>, Serializable {
 	}
 
 	private String getVerbInfo() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
 		GrammaticalLabel.VerbType vt = GrammaticalLabel.getVerbType(grammLabelUid);
 		sb.append(", ").append(vt);
@@ -215,7 +213,7 @@ public class WordEntry implements Comparable<WordEntry>, Serializable {
 	}
 
 	private String getNumeralInfo() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
 		GrammaticalLabel.NumeralType nt = GrammaticalLabel.getNumeralType(grammLabelUid);
 		if(nt != GrammaticalLabel.NumeralType.NONE) {

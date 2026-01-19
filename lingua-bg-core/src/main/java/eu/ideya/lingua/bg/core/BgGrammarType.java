@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 /**
  *
@@ -41,8 +41,8 @@ public class BgGrammarType {
 	 */
 	private static final int numBgTypeMask = 0b11111111 << numBgTypeOffset;
 
-	private int  code;
-	private char suffix;
+	private final int  code;
+	private final char suffix;
 
 
 	public static int getFirstNounTypeId() {

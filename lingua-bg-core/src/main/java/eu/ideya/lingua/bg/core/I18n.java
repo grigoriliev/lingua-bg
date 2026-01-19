@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 Grigor Iliev <grigor@grigoriliev.com>
+ *   Copyright (C) 2024-2026 Grigor Iliev <grigor@grigoriliev.com>
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package eu.ideya.lingua.bg;
+package eu.ideya.lingua.bg.core;
 
 import java.util.Locale;
 
@@ -25,15 +25,15 @@ public class I18n extends eu.ideya.simplicity.I18n {
 	/** Provides the locale-specific data of this library. */
 	private static final I18n INSTANCE = new I18n();
 
-	private static Locale[] locales = {  new Locale("en", "US") };
+	private static final Locale[] locales = {  new Locale("en", "US") };
 
 	private I18n() {
-		//setButtonsBundle("eu.ideya.lingua.bg.langprops.ButtonsLabelsBundle");
-		setErrorsBundle("eu.ideya.lingua.bg.langprops.ErrorsBundle");
-		setLabelsBundle("eu.ideya.lingua.bg.langprops.LabelsBundle");
-		//setLogsBundle("eu.ideya.lingua.bg.langprops.LogsBundle");
-		//setMenusBundle("eu.ideya.lingua.bg.langprops.MenuLabelsBundle");
-		setMessagesBundle("eu.ideya.lingua.bg.langprops.MessagesBundle");
+		//setButtonsBundle("eu.ideya.lingua.bg.core.langprops.ButtonsLabelsBundle");
+		setErrorsBundle("eu.ideya.lingua.bg.core.langprops.ErrorsBundle");
+		setLabelsBundle("eu.ideya.lingua.bg.core.langprops.LabelsBundle");
+		//setLogsBundle("eu.ideya.lingua.bg.core.langprops.LogsBundle");
+		//setMenusBundle("eu.ideya.lingua.bg.core.langprops.MenuLabelsBundle");
+		setMessagesBundle("eu.ideya.lingua.bg.core.langprops.MessagesBundle");
 	}
 
 	public static I18n getInstance() { return INSTANCE; }
