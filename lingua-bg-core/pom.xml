@@ -10,7 +10,7 @@
 	<name>${project.groupId}:${project.artifactId}</name>
 
 	<description>
-		A Java library designed to represent and manage linguistic data for the Bulgarian language.
+		LinguaBG Core: core utilities for managing, structuring, and accessing Bulgarian linguistic data.
 	</description>
 
 	<url>https://github.com/grigoriliev/lingua-bg</url>
@@ -70,11 +70,11 @@
 					<doclint>none</doclint>
 					<author>false</author>
 					<splitindex>true</splitindex>
-					<windowtitle>Lingua-BG ${project.version} API specification</windowtitle>
+					<windowtitle>LinguaBG Core ${project.version} API specification</windowtitle>
 					<overview>${project.basedir}/src/main/java/overview.html</overview>
-					<doctitle>Lingua-BG ${project.version} API specification</doctitle>
-					<header><![CDATA[<b>Lingua-BG</b><br><font size=-1>v${project.version}</font>]]></header>
-					<bottom><![CDATA[<font size=-1>Copyright &copy; 2024 Grigor Iliev. All rights reserved.</font>]]></bottom>
+					<doctitle>LinguaBG Core ${project.version} API specification</doctitle>
+					<header><![CDATA[<b>LinguaBG Core</b><br><font size=-1>v${project.version}</font>]]></header>
+					<bottom><![CDATA[<font size=-1>Copyright &copy; 2024-2026 Grigor Iliev. All rights reserved.</font>]]></bottom>
 				</configuration>
 			</plugin>
 			<plugin>
